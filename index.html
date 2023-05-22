@@ -176,8 +176,8 @@
       }
 
       map = L.map('map').setView([latitudeValue, longitudeValue], 5);
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles © Esri — Source: USGS, Esri, TANA, DeLorme, and NPS',
+      L.tileLayer('https://dh.gu.se/tiles/imperium/{z}/{x}/{y}.png', {
+        attribution: 'Digital Atlas of the Roman Empire',
         maxZoom: 13,
       }).addTo(map);
 
