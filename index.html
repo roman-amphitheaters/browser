@@ -176,10 +176,11 @@
       }
 
       map = L.map('map').setView([latitudeValue, longitudeValue], 5);
-      L.tileLayer('https:{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href="https:www.openstreetmap.org/">OpenStreetMap</a> contributors',
-        maxZoom: 18,
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles © Esri — Source: USGS, Esri, TANA, DeLorme, and NPS',
+        maxZoom: 13,
       }).addTo(map);
+
 
       marker = L.marker([latitudeValue, longitudeValue]);
 
