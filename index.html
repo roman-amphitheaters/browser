@@ -17,7 +17,7 @@
     }
 
     #map {
-      height: 400px;
+      height: 40em;
     }
   </style>
 </head>
@@ -48,7 +48,7 @@
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="map-tab-content" role="tabpanel" aria-labelledby="map-tab">
-        <div id="map"></div>
+        <div class="p-4" id="map"></div>
       </div>
       <div class="tab-pane fade" id="results-tab-content" role="tabpanel" aria-labelledby="results-tab">
         <div class="p-4" id="results"></div>
@@ -205,7 +205,7 @@
             },
             onEachFeature: function (feature, layer) {
               if (feature.properties && feature.properties.label) {
-                layer.bindTooltip("Label: " + feature.properties.label);
+                layer.bindTooltip( feature.properties.label);
               }
             }
           }).addTo(map);
@@ -227,14 +227,19 @@
         console.error('Error loading CSV file:', error);
       });
 
-    // Add event listener for ID dropdown change
-    const idSelect = document.getElementById('idSelect');
-    idSelect.addEventListener('change', displayRow);
+    
 
     const mapTabButton = document.getElementById('map-tab');
     mapTabButton.addEventListener('shown.bs.tab', () => {
       map.invalidateSize();
     });
+
+    // Add event listener for ID dropdown change
+    const idSelect = document.getElementById('idSelect');
+    idSelect.addEventListener('change', displayRow);
+    // Set initial view. It would be nice if this worked... I'll figure it out. Shouldn't be hard
+    idSelect.value = "romeFlavianAmphitheater";
+    displayRow();
   </script>
 </body>
 
