@@ -11,8 +11,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script> -->
-
   <style>
     #results {
       background-color: #f8f9fa;
@@ -27,7 +25,7 @@
 <body>
   <nav class="navbar navbar-dark bg-dark">
     <span class="navbar-brand mb-0 h1">Simple Roman Amphitheater Data Browser</span>
-    <span class="navbar-text" style="padding-right: 15px;">Written as a test using ChatGPT and Bing Chat</span>
+    <span class="navbar-text p-4">Written as a test using ChatGPT and Bing Chat</span>
   </nav>
 
   <div class="container mt-4">
@@ -185,6 +183,28 @@
       marker = L.marker([latitudeValue, longitudeValue]);
 
       marker.addTo(map);
+
+      fetch('https://roman-amphitheaters.github.io/roman-amphitheaters/roman-amphitheaters.geojson')
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (data) {
+    L.geoJSON(data, {
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, {
+          radius: 4,
+          fillColor: 'red',
+          color: 'red',
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8
+        });
+      }
+    }).addTo(map);
+  })
+  .catch(function (error) {
+    console.error('Error fetching GeoJSON:', error);
+  });
 
     }
 
