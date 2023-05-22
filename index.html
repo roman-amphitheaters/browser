@@ -205,7 +205,7 @@
             },
             onEachFeature: function (feature, layer) {
               if (feature.properties && feature.properties.label) {
-                layer.bindTooltip( feature.properties.label);
+                layer.bindTooltip(feature.properties.label);
               }
             }
           }).addTo(map);
@@ -222,12 +222,16 @@
       .then(csvData => {
         data = parseCSV(csvData);
         populateIdDropdown(); // Populate the ID dropdown menu after CSV data is loaded
+        // Set initial view. It would be nice if this worked... I'll figure it out. Shouldn't be hard
+        idSelect.value = "romeFlavianAmphitheater";
+        displayRow();
+
       })
       .catch(error => {
         console.error('Error loading CSV file:', error);
       });
 
-    
+
 
     const mapTabButton = document.getElementById('map-tab');
     mapTabButton.addEventListener('shown.bs.tab', () => {
@@ -237,9 +241,6 @@
     // Add event listener for ID dropdown change
     const idSelect = document.getElementById('idSelect');
     idSelect.addEventListener('change', displayRow);
-    // Set initial view. It would be nice if this worked... I'll figure it out. Shouldn't be hard
-    idSelect.value = "romeFlavianAmphitheater";
-    displayRow();
   </script>
 </body>
 
