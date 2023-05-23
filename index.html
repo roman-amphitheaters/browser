@@ -171,7 +171,7 @@
             link.href = value;
             link.textContent = value;
             valueCol.appendChild(link);
-          } else if (key == 'zotero') { 
+          } else if (key == 'zotero' && value != '') { 
             const link = document.createElement('a');
             link.href = 'https://www.zotero.org/groups/2900686/roman_amphitheaters/items/' + value;
             link.textContent = value;
