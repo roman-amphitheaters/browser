@@ -61,12 +61,12 @@
       </div>
     </div>
 
-    <div>Code: <a
+    <div>Code: <a target="_blank" 
         href="https://github.com/roman-amphitheaters/browser">https://github.com/roman-amphitheaters/browser</a></div>
-    <div>Data: <a
+    <div>Data: <a target="_blank" 
         href="http://github.com/roman-amphitheaters/roman-amphitheaters">http://github.com/roman-amphitheaters/roman-amphitheaters</a>
     </div>
-    <div>Basemap: <a href="https://dh.gu.se/dare/">https://dh.gu.se/dare/</a></div>
+    <div>Basemap: <a  target="_blank" href="https://dh.gu.se/dare/">https://dh.gu.se/dare/</a></div>
 
   </div>
 
@@ -171,7 +171,13 @@
             link.href = value;
             link.textContent = value;
             valueCol.appendChild(link);
-          } else {
+          } else if (key == 'zotero') { 
+            const link = document.createElement('a');
+            link.href = 'https://www.zotero.org/groups/2900686/roman_amphitheaters/items/' + value;
+            link.textContent = value;
+            valueCol.appendChild(link);
+          }
+          else {
             valueCol.textContent = value;
           }
 
