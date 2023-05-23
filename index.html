@@ -184,6 +184,12 @@
         maxZoom: 13,
       }).addTo(map);
 
+      var cawmTerrain = L.tileLayer('https://cawm.lib.uiowa.edu/tiles/{z}/{x}/{y}.png', {
+        attribution: 'CAWM/UIowa',
+        maxZoom: 13,
+      })
+
+
       var esriSatellite = L.tileLayer(
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         {
@@ -208,6 +214,7 @@
 
       var baseMaps = {
         DARE: dare,
+        'CAWM Terrain': cawmTerrain,
         'ESRI Satellite': esriSatellite,
         'Stamen Terrain': Stamen_TerrainBackground,
         'OSM Topo & Streets': osmTopoLayer
