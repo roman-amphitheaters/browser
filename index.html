@@ -34,7 +34,8 @@
 <body>
   <nav class="navbar navbar-dark bg-dark">
     <span class="navbar-brand mb-0 p-4 h1">Roman Amphitheater Map and Data Browser</span>
-    <span class="navbar-text p-4">Created by <a style="color:gray" href="http://isaw.nyu.edu/people/faculty/isaw-faculty/sebastian-heath">Sebastian Heath</a></span>
+    <span class="navbar-text p-4">Created by <a style="color:gray"
+        href="http://isaw.nyu.edu/people/faculty/isaw-faculty/sebastian-heath">Sebastian Heath</a></span>
   </nav>
 
   <div class="container mt-4">
@@ -259,6 +260,7 @@
 
       map = L.map('map', { fullscreenControl: true }).setView([latitudeValue, longitudeValue], 5);
 
+      // Create tile layers
       var dare = L.tileLayer('https://dh.gu.se/tiles/imperium/{z}/{x}/{y}.png', {
         attribution: 'Digital Atlas of the Roman Empire',
         maxZoom: 13,
@@ -268,7 +270,6 @@
         attribution: 'CAWM/UIowa',
         maxZoom: 13,
       })
-
 
       var esriSatellite = L.tileLayer(
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -286,12 +287,12 @@
         ext: 'png'
       });
 
-      // Create a tile layer using the OSM terrain tileset URL
       var osmTopoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         maxZoom: 17,
         attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
       });
 
+      // Create baseMaps object for leaflet layer control
       var baseMaps = {
         DARE: dare,
         'CAWM Terrain': cawmTerrain,
@@ -300,11 +301,11 @@
         'OSM Topo & Streets': osmTopoLayer
       };
 
-
+      // Create marker and add to map
       marker = L.marker([latitudeValue, longitudeValue]);
-
       marker.addTo(map);
 
+      // Fetch all geojson data
       fetch('https://roman-amphitheaters.github.io/roman-amphitheaters/roman-amphitheaters.geojson')
         .then(function (response) {
           return response.json();
@@ -364,13 +365,15 @@
         console.error('Error loading CSV file:', error);
       });
 
+    // Event listeners
 
-
+    // Add event listener for main map to force update
     const mapTabButton = document.getElementById('map-tab');
     mapTabButton.addEventListener('shown.bs.tab', () => {
       map.invalidateSize();
     });
 
+    // Add event listener for satellite map to force update
     const satTabButton = document.getElementById('satellite-tab');
     satTabButton.addEventListener('shown.bs.tab', () => {
       satmap.invalidateSize();
