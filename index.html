@@ -24,7 +24,6 @@
     #map {
       height: 40em;
     }
-
   </style>
 </head>
 
@@ -51,6 +50,11 @@
         <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results-tab-content"
           type="button" role="tab" aria-controls="results-tab-content" aria-selected="false">Data</button>
       </li>
+      <li class="nav-item" role="amphitheatrum">
+        <button class="nav-link" id="amphitheatrum-tab" data-bs-toggle="tab" data-bs-target="#amphitheatrum-tab-content"
+          type="button" role="tab" aria-controls="amphitheatrum-tab-content"
+          aria-selected="false">Amphitheatrum</button>
+      </li>
     </ul>
     <div class="tab-content" id="tab-content">
       <div class="tab-pane fade show active" id="map-tab-content" role="tabpanel" aria-labelledby="map-tab">
@@ -59,14 +63,21 @@
       <div class="tab-pane fade" id="results-tab-content" role="tabpanel" aria-labelledby="results-tab">
         <div class="p-4" id="results"></div>
       </div>
+      <div class="tab-pane fade" id="amphitheatrum-tab-content" role="tabpanel" aria-labelledby="amphitheatrum-tab">
+        <div class="p-4" id="results">
+          <span>Content from <a target="_blank" href="https://amphi-theatrum.de">https://amphi-theatrum.de</a> will appear if a link is known. If no content appears that may be because data entry is underway.</span>
+          <iframe id="amphitheatrum_iframe" style="width:100%;height:60em"></iframe>
+        </div>
+      </div>
+
     </div>
 
-    <div>Code: <a target="_blank" 
+    <div>Code: <a target="_blank"
         href="https://github.com/roman-amphitheaters/browser">https://github.com/roman-amphitheaters/browser</a></div>
-    <div>Data: <a target="_blank" 
+    <div>Data: <a target="_blank"
         href="http://github.com/roman-amphitheaters/roman-amphitheaters">http://github.com/roman-amphitheaters/roman-amphitheaters</a>
     </div>
-    <div>Basemap: <a  target="_blank" href="https://dh.gu.se/dare/">https://dh.gu.se/dare/</a></div>
+    <div>Basemap: <a target="_blank" href="https://dh.gu.se/dare/">https://dh.gu.se/dare/</a></div>
 
   </div>
 
@@ -135,6 +146,15 @@
     function showResult(row) {
       showDataResult(row);
       showMapResult(row);
+      const amphitheatrum = row['amphitheatrum']
+      console.log(amphitheatrum)
+      if (amphitheatrum.startsWith("https://amphi-theatrum.de")) {
+        console.log(amphitheatrum)
+        document.getElementById("amphitheatrum_iframe").src = amphitheatrum;
+      }
+      else {
+        document.getElementById("amphitheatrum_iframe").src = "";
+      }
     }
 
     // Function to display the selected row's columns
@@ -171,7 +191,7 @@
             link.href = value;
             link.textContent = value;
             valueCol.appendChild(link);
-          } else if (key == 'zotero' && value != '') { 
+          } else if (key == 'zotero' && value != '') {
             const link = document.createElement('a');
             link.href = 'https://www.zotero.org/groups/2900686/roman_amphitheaters/items/' + value;
             link.textContent = value;
@@ -197,8 +217,8 @@
         map = undefined
         document.getElementById('map-tab-content').innerHTML = "<div id='map'></div>";
       }
-      
-      map = L.map('map',{fullscreenControl: true }).setView([latitudeValue, longitudeValue], 5);
+
+      map = L.map('map', { fullscreenControl: true }).setView([latitudeValue, longitudeValue], 5);
 
       var dare = L.tileLayer('https://dh.gu.se/tiles/imperium/{z}/{x}/{y}.png', {
         attribution: 'Digital Atlas of the Roman Empire',
