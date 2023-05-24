@@ -79,7 +79,8 @@
         </div>
       </div>
       <div class="tab-pane fade active" id="satellite-tab-content" role="tabpanel" aria-labelledby="satellite-tab">
-        <span>If the satellite image does not show completely, adjust window size by a tiny amount and that should cause a reload. (To be fixed!)</span>
+        <span>If the satellite image does not show completely, adjust window size by a tiny amount and that should cause
+          a reload. (To be fixed!)</span>
         <div class="p-4" id="satellite"></div>
       </div>
 
@@ -233,7 +234,7 @@
       if (typeof satmap != "undefined" && satmap != null) {
         satmap.remove();
         satmap = undefined
-        document.getElementById('satellite-tab-content').innerHTML = "<div id='satellite'></div>";
+        document.getElementById('satellite-tab-content').innerHTML = '<span>If the satellite image does not show completely, adjust window size by a tiny amount and that should cause a reload. (To be fixed!)</span><div class="p - 4" id="satellite"></div>';
       }
 
       satmap = L.map('satellite', { fullscreenControl: true }).setView([latitudeValue, longitudeValue], 18);
@@ -373,7 +374,7 @@
     });
 
     const satTabButton = document.getElementById('satellite-tab');
-    mapTabButton.addEventListener('shown.bs.tab', () => {
+    satTabButton.addEventListener('shown.bs.tab', () => {
       satmap.invalidateSize();
     });
 
