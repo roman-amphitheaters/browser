@@ -79,6 +79,7 @@
         </div>
       </div>
       <div class="tab-pane fade active" id="satellite-tab-content" role="tabpanel" aria-labelledby="satellite-tab">
+        <span>If the satellite image does not show completely, adjust window size by a tiny amount and that should cause a reload. (To be fixed!)</span>
         <div class="p-4" id="satellite"></div>
       </div>
 
@@ -158,6 +159,12 @@
     function showResult(row) {
       showDataResult(row);
       showMapResult(row);
+      showAmphitheatrumResult(row);
+      showSatelliteResult(row)
+    }
+
+    // Function to display the selected row's amphitheatrum
+    function showAmphitheatrumResult(row) {
       const amphitheatrum = row['amphitheatrum']
       if (amphitheatrum.startsWith("https://amphi-theatrum.de")) {
         document.getElementById("amphitheatrum_iframe").src = amphitheatrum;
@@ -165,7 +172,6 @@
       else {
         document.getElementById("amphitheatrum_iframe").src = "";
       }
-      showSatelliteResult(row)
     }
 
     // Function to display the selected row's columns
@@ -324,6 +330,8 @@
                 click: function (e) {
                   var selectedRow = data.find(item => item['id'] === feature.id);
                   showDataResult(selectedRow);
+                  showAmphitheatrumResult(selectedRow);
+                  showSatelliteResult(selectedRow);
                   document.getElementById('idSelect').value = feature.id;
                   var lat = selectedRow['latitude']
                   var lng = selectedRow['longitude']
@@ -362,6 +370,11 @@
     const mapTabButton = document.getElementById('map-tab');
     mapTabButton.addEventListener('shown.bs.tab', () => {
       map.invalidateSize();
+    });
+
+    const satTabButton = document.getElementById('satellite-tab');
+    mapTabButton.addEventListener('shown.bs.tab', () => {
+      satmap.invalidateSize();
     });
 
     // Add event listener for ID dropdown change
