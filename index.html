@@ -346,7 +346,7 @@
     fetch('https://roman-amphitheaters.github.io/roman-amphitheaters/roman-amphitheaters.csv')
       .then(response => response.text())
       .then(csvData => {
-        data = parseCSV(csvData);
+        data = parseCSV(csvData.trim());
         populateIdDropdown(); // Populate the ID dropdown menu after CSV data is loaded
         // Set initial view.
         idSelect.value = "romeFlavianAmphitheater";
