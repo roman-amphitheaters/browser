@@ -341,7 +341,13 @@
               });
             }
           }).addTo(map);
-          L.control.layers(baseMaps, { "All Locations": amphitheaterLayer }, { collapsed: false }).addTo(map); // Add the layers control to the map
+
+          var overlays = {
+            "Current location": marker,
+            "All Locations": amphitheaterLayer
+          };
+
+          L.control.layers(baseMaps, overlays, { collapsed: false }).addTo(map); // Add the layers control to the map
 
         })
         .catch(function (error) {
