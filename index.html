@@ -262,6 +262,8 @@
       }
 
       map = L.map('map', { fullscreenControl: true }).setView([latitudeValue, longitudeValue], 5);
+      // map.createPane('locations');
+      // map.getPane('locations').style.zIndex = 900;
 
       dare.addTo(map);
 
@@ -286,14 +288,12 @@
       var overlays = {
         "Current location": marker,
         "All Locations": amphitheaterLayer,
-        "100km Connections": networkLayer
+        "<100km Connections": networkLayer
       };
 
       L.control.layers(baseMaps, overlays, { collapsed: false }).addTo(map); // Add the layers control to the map
 
-
     }
-
 
     // Create leaflet tile layers
     var dare = L.tileLayer('https://dh.gu.se/tiles/imperium/{z}/{x}/{y}.png', {
@@ -332,6 +332,7 @@
         const amphitheater_response = await fetch('https://roman-amphitheaters.github.io/roman-amphitheaters/roman-amphitheaters.geojson');
         const amphitheater_geojson = await amphitheater_response.json();
         amphitheaterLayer = L.geoJSON(amphitheater_geojson, {
+          // pane: "locations",
           pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
               radius: 4,
@@ -408,10 +409,9 @@
     createAll().then(() => {
       idSelect.value = "romeFlavianAmphitheater";
       displayRow();
-
     })
       .catch(error => {
-        console.error('Error loading CSV file:', error);
+        console.error('Error setting up:', error);
       });
 
     // Event listeners
@@ -428,7 +428,7 @@
       satmap.invalidateSize();
     });
 
-    // Add event listener for ID dropdown change
+    // Add event listener for popupmenu change
     const idSelect = document.getElementById('idSelect');
     idSelect.addEventListener('change', displayRow);
   </script>
