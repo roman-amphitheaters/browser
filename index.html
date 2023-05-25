@@ -16,6 +16,9 @@
   <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css'
     rel='stylesheet' />
 
+  <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+    crossorigin="anonymous"></script>
+
   <style>
     #results {
       background-color: #f8f9fa;
@@ -260,37 +263,7 @@
 
       map = L.map('map', { fullscreenControl: true }).setView([latitudeValue, longitudeValue], 5);
 
-      // Create tile layers
-      var dare = L.tileLayer('https://dh.gu.se/tiles/imperium/{z}/{x}/{y}.png', {
-        attribution: 'Digital Atlas of the Roman Empire',
-        maxZoom: 13,
-      }).addTo(map);
-
-      var cawmTerrain = L.tileLayer('https://cawm.lib.uiowa.edu/tiles/{z}/{x}/{y}.png', {
-        attribution: 'CAWM/UIowa',
-        maxZoom: 13,
-      })
-
-      var esriSatellite = L.tileLayer(
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        {
-          attribution: 'Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP',
-          maxZoom: 18,
-        }
-      );
-
-      var Stamen_TerrainBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}{r}.{ext}', {
-        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        subdomains: 'abcd',
-        minZoom: 0,
-        maxZoom: 18,
-        ext: 'png'
-      });
-
-      var osmTopoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-        maxZoom: 17,
-        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-      });
+      dare.addTo(map);
 
       // Create baseMaps object for leaflet layer control
       var baseMaps = {
@@ -305,68 +278,138 @@
       marker = L.marker([latitudeValue, longitudeValue]);
       marker.addTo(map);
 
-      // Fetch all geojson data
-      fetch('https://roman-amphitheaters.github.io/roman-amphitheaters/roman-amphitheaters.geojson')
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (geojson_data) {
-          amphitheaterLayer = L.geoJSON(geojson_data, {
-            pointToLayer: function (feature, latlng) {
-              return L.circleMarker(latlng, {
-                radius: 4,
-                fillColor: 'red',
-                color: 'red',
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-              });
-            },
-            onEachFeature: function (feature, layer) {
-              if (feature.properties && feature.properties.label) {
-                layer.bindTooltip(feature.properties.label);
-              };
-              layer.on({
-                click: function (e) {
-                  var selectedRow = data.find(item => item['id'] === feature.id);
-                  showDataResult(selectedRow);
-                  showAmphitheatrumResult(selectedRow);
-                  showSatelliteResult(selectedRow);
-                  document.getElementById('idSelect').value = feature.id;
-                  var lat = selectedRow['latitude']
-                  var lng = selectedRow['longitude']
-                  var newLatLng = new L.LatLng(lat, lng);
-                  marker.setLatLng(newLatLng)
-                }
-              });
-            }
-          }).addTo(map);
+      networkLayer.addTo(map);
+      amphitheaterLayer.addTo(map);
 
-          var overlays = {
-            "Current location": marker,
-            "All Locations": amphitheaterLayer
-          };
+      // Create overlay object for leaflet layer control
 
-          L.control.layers(baseMaps, overlays, { collapsed: false }).addTo(map); // Add the layers control to the map
+      var overlays = {
+        "Current location": marker,
+        "All Locations": amphitheaterLayer,
+        "100km Connections": networkLayer
+      };
 
-        })
-        .catch(function (error) {
-          console.error('Error fetching GeoJSON:', error);
-        });
+      L.control.layers(baseMaps, overlays, { collapsed: false }).addTo(map); // Add the layers control to the map
+
 
     }
 
-    // Load the CSV file from the relative URL
-    fetch('https://roman-amphitheaters.github.io/roman-amphitheaters/roman-amphitheaters.csv')
-      .then(response => response.text())
-      .then(csvData => {
-        data = parseCSV(csvData.trim());
-        populateIdDropdown(); // Populate the ID dropdown menu after CSV data is loaded
-        // Set initial view.
-        idSelect.value = "romeFlavianAmphitheater";
-        displayRow();
 
-      })
+    // Create leaflet tile layers
+    var dare = L.tileLayer('https://dh.gu.se/tiles/imperium/{z}/{x}/{y}.png', {
+      attribution: 'Digital Atlas of the Roman Empire',
+      maxZoom: 13,
+    })
+
+    var cawmTerrain = L.tileLayer('https://cawm.lib.uiowa.edu/tiles/{z}/{x}/{y}.png', {
+      attribution: 'CAWM/UIowa',
+      maxZoom: 13,
+    })
+
+    var esriSatellite = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        attribution: 'Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP',
+        maxZoom: 18,
+      }
+    );
+
+    var Stamen_TerrainBackground = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}{r}.{ext}', {
+      attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      subdomains: 'abcd',
+      minZoom: 0,
+      maxZoom: 18,
+      ext: 'png'
+    });
+
+    var osmTopoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      maxZoom: 17,
+      attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+    });
+
+    async function createAmphitheaterLayer() {
+      try {
+        const amphitheater_response = await fetch('https://roman-amphitheaters.github.io/roman-amphitheaters/roman-amphitheaters.geojson');
+        const amphitheater_geojson = await amphitheater_response.json();
+        amphitheaterLayer = L.geoJSON(amphitheater_geojson, {
+          pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+              radius: 4,
+              fillColor: 'red',
+              color: 'red',
+              weight: 1,
+              opacity: 1,
+              fillOpacity: 0.8
+            });
+          },
+          onEachFeature: function (feature, layer) {
+            if (feature.properties && feature.properties.label) {
+              layer.bindTooltip(feature.properties.label);
+            };
+            layer.on({
+              click: function (e) {
+                var selectedRow = data.find(item => item['id'] === feature.id);
+                showDataResult(selectedRow);
+                showAmphitheatrumResult(selectedRow);
+                showSatelliteResult(selectedRow);
+                document.getElementById('idSelect').value = feature.id;
+                var lat = selectedRow['latitude']
+                var lng = selectedRow['longitude']
+                var newLatLng = new L.LatLng(lat, lng);
+                marker.setLatLng(newLatLng)
+              }
+            });
+          }
+        });
+      } catch (error) {
+        console.error('Error fetching amphitheater GeoJSON:', error);
+      }
+    }
+
+    async function createNetworkLayer() {
+      try {
+        const network_response = await fetch('https://roman-amphitheaters.github.io/roman-amphitheaters/close-amphitheaters.geojson');
+        const network_geojson = await network_response.json();
+        networkLayer = L.geoJSON(network_geojson, {
+          style: function (feature) {
+            return {
+              color: 'black',
+              weight: .5,
+              opacity: 1
+            };
+          },
+          filter: function (feature) {
+            return feature.geometry.type !== 'Point';
+          }
+        });
+      } catch (error) {
+        console.error('Error fetching network GeoJSON:', error);
+      }
+    }
+
+    async function createCSVData() {
+      try {
+        const csv_response = await fetch('https://roman-amphitheaters.github.io/roman-amphitheaters/roman-amphitheaters.csv');
+        const csv_data = await csv_response.text();
+        data = parseCSV(csv_data.trim());
+      } catch (error) {
+        console.error('Error fetching CSV data:', error);
+      }
+    }
+
+    var data;
+    async function createAll() {
+      await createAmphitheaterLayer();
+      await createNetworkLayer();
+      await createCSVData();
+      populateIdDropdown();
+    }
+
+    createAll().then(() => {
+      idSelect.value = "romeFlavianAmphitheater";
+      displayRow();
+
+    })
       .catch(error => {
         console.error('Error loading CSV file:', error);
       });
